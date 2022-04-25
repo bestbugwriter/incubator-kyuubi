@@ -19,15 +19,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.apache.kyuubi</groupId>
-        <artifactId>kyuubi-parent</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kyuubi-tpcds_2.12</artifactId>
+    <groupId>org.apache.kyuubi</groupId>
+    <artifactId>kyuubi-tpcds_2.11</artifactId>
+    <version>1.6.0</version>
     <name>Kyuubi Dev TPCDS Generator</name>
     <packaging>jar</packaging>
     <url>https://kyuubi.apache.org/</url>
@@ -36,66 +33,56 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
+            <version>2.11.8</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_${scala.binary.version}</artifactId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.3.2</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.scopt</groupId>
-            <artifactId>scopt_${scala.binary.version}</artifactId>
+            <artifactId>scopt_2.11</artifactId>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>io.trino.tpcds</groupId>
             <artifactId>tpcds</artifactId>
+            <version>1.4</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <version>30.1-jre</version>
         </dependency>
     </dependencies>
 
     <build>
-        <outputDirectory>target/scala-${scala.binary.version}/classes</outputDirectory>
-        <testOutputDirectory>target/scala-${scala.binary.version}/test-classes</testOutputDirectory>
-
         <plugins>
             <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                    <artifactSet>
-                        <includes>
-                            <include>com.github.scopt:scopt_${scala.binary.version}</include>
-                            <include>io.trino.tpcds:tpcds</include>
-                            <include>com.google.guava:guava</include>
-                        </includes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>com.google.common</pattern>
-                            <shadedPattern>${kyuubi.shade.packageName}.com.google.common</shadedPattern>
-                            <includes>
-                                <include>com.google.common.**</include>
-                            </includes>
-                        </relocation>
-                    </relocations>
-                </configuration>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -104,6 +91,25 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <artifactSet>
+                        <includes>
+                            <include>com.github.scopt:scopt_2.11</include>
+                            <include>io.trino.tpcds:tpcds</include>
+                            <include>com.google.guava:guava</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.google.common</pattern>
+                            <shadedPattern>kyuubi.com.google.common</shadedPattern>
+                            <includes>
+                                <include>com.google.common.**</include>
+                            </includes>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
         </plugins>
     </build>

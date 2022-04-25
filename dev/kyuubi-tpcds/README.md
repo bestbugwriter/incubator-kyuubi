@@ -23,6 +23,8 @@ This module includes TPC-DS data generator and benchmark tool.
 package jar with following command:
 `./build/mvn clean package -Ptpcds -pl dev/kyuubi-tpcds -am`
 
+mvn clean scala:compile compile package
+
 ## Data Generator
 
 Support options:

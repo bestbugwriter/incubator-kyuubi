@@ -39,7 +39,7 @@ case class TableGenerator(
   private def parallelism: Int = _parallelism.getOrElse(scaleFactor * 2)
   def setParallelism(parallel: Int): Unit = this._parallelism = Some(parallel max 2)
 
-  private val ss: SparkSession = SparkSession.active
+  private val ss: SparkSession = SparkSession.builder().getOrCreate()
   private var _format: Option[String] = None
   private def format: String = _format.getOrElse(ss.conf.get("spark.sql.sources.default"))
   def setFormat(format: String): Unit = this._format = Some(format)
